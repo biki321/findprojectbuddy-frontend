@@ -1,0 +1,7 @@
+.project-app {
+  display: flex;
+}
+.info-panel {
+  width: 200px;
+  max-width: 200px;
+}

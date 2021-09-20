@@ -1,0 +1,29 @@
+import { Redirect, Route } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
+
+interface IProps {
+  children: JSX.Element;
+  path: string;
+  exact?: boolean;
+}
+
+export default function ProtectedRoute({ children, ...rest }: IProps) {
+  const { authState } = useAuth();
+  return (
+    <Route
+      {...rest}
+      render={({ location }) =>
+        authState.isAuthenticated ? (
+          children
+        ) : (
+          <Redirect
+            to={{
+              pathname: "/login",
+              state: { from: location },
+            }}
+          />
+        )
+      }
+    />
+  );
+}
