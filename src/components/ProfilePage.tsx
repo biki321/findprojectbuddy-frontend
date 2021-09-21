@@ -2,18 +2,9 @@ import { useEffect, useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import Avatar from "@mui/material/Avatar";
 import Typography from "@mui/material/Typography";
-import axios, { AxiosRequestConfig } from "axios";
-import jwt_decode from "jwt-decode";
-import { IJwtPayload } from "../interfaces/iJwtPayload.interface";
-import { tag } from "../interfaces/tag.interface";
+import { ITag } from "../interfaces/tag.interface";
 import { NavLink } from "react-router-dom";
-
-const axiosInter = axios.create({
-  baseURL: "http://localhost:8080/api/v1",
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
+import { useAxiosIntercept } from "../contexts/AxiosInterceptContext";
 
 interface IDetails {
   tagSearchText: string;
@@ -24,7 +15,7 @@ interface IDetails {
 }
 
 export default function ProfilePage() {
-  const { authState, refreshToken } = useAuth();
+  const { authState } = useAuth();
   const [availableTags, setAvailableTags] = useState([] as string[]);
   const [tagToIdMap, setTagToIdMap] = useState({} as { [key: string]: number });
   const [details, setDetails] = useState({
@@ -34,20 +25,7 @@ export default function ProfilePage() {
     tagMatches: [],
     error: "",
   } as IDetails);
-
-  axiosInter.interceptors.request.use(async (config: AxiosRequestConfig) => {
-    const currentDate = new Date();
-
-    if (!authState.accessToken) return Promise.reject("accessToken is null");
-    const { exp } = jwt_decode<IJwtPayload>(authState.accessToken);
-    if (exp * 1000 < currentDate.getTime()) {
-      const token = await refreshToken();
-      console.log("new tok at intercep", token);
-      if (!token) return Promise.reject("could not get new token");
-      config.headers["Authorization"] = `token ${token}`;
-    }
-    return config;
-  });
+  const axiosIntercept = useAxiosIntercept();
 
   const tagSearchHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     // setDetails({ ...details, tagSearchText: e.target.value });
@@ -95,7 +73,7 @@ export default function ProfilePage() {
   const submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const { data } = await axiosInter.patch(
+      const { data } = await axiosIntercept.patch(
         "/user/update",
         {
           bio: details.bio,
@@ -112,7 +90,7 @@ export default function ProfilePage() {
       setDetails({
         ...details,
         bio: data.bio,
-        tags: data.tags.map((element: tag) => element.tag),
+        tags: data.tags.map((element: ITag) => element.tag),
       });
     } catch (error) {
       setDetails({ ...details, error: "could not update" });
@@ -121,34 +99,36 @@ export default function ProfilePage() {
 
   useEffect(() => {
     (async () => {
-      console.log("useeffect at profile pagge");
+      console.log("useeffect at profile page");
       try {
         //get users tags
-        let { data } = await axiosInter.get("/user/tags", {
+        let { data } = await axiosIntercept.get("/user/tags", {
           headers: {
             Authorization: `token ${authState.accessToken}`,
           },
         });
         setDetails({
           ...details,
-          tags: data.map((element: tag) => element.tag),
+          tags: data.map((element: ITag) => element.tag),
         });
 
         //get all the available tags to use for anybody
-        ({ data } = await axiosInter.get("/tags", {
+        ({ data } = await axiosIntercept.get("/tags", {
           headers: {
             Authorization: `token ${authState.accessToken}`,
           },
         }));
         console.log(data);
         const tagToId = Object.create({});
-        data.forEach((element: tag) => {
+        data.forEach((element: ITag) => {
           tagToId[element.tag] = element.id;
         });
         console.log(tagToId);
         setTagToIdMap(tagToId);
-        setAvailableTags(data.map((element: tag) => element.tag));
-      } catch (error) {}
+        setAvailableTags(data.map((element: ITag) => element.tag));
+      } catch (error) {
+        setDetails({ ...details, error: "could not fetch" });
+      }
     })();
   }, []);
 

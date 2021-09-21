@@ -1,9 +1,9 @@
 import { ITag } from "./tag.interface";
 
-export interface IFeed {
+export interface IProject {
   id: number;
-  ownerId: number;
   title: string;
   description: string;
-  tags: ITag[];
+  ownerId: number;
+  tags?: ITag[];
 }

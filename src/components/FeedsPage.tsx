@@ -1,41 +1,19 @@
 import { useAuth } from "../contexts/AuthContext";
-import axios, { AxiosRequestConfig } from "axios";
-import jwt_decode from "jwt-decode";
 import { useEffect, useState } from "react";
-import { feed } from "../interfaces/feed.interface";
-import { IJwtPayload } from "../interfaces/iJwtPayload.interface";
-
-const axiosInter = axios.create({
-  baseURL: "http://localhost:8080/api/v1",
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
+import { IFeed } from "../interfaces/feed.interface";
+import { useAxiosIntercept } from "../contexts/AxiosInterceptContext";
 
 export default function FeedsPage() {
-  const { authState, refreshToken } = useAuth();
-  const [feeds, setFeeds] = useState<feed[]>([]);
+  const { authState } = useAuth();
+  const [feeds, setFeeds] = useState<IFeed[]>([]);
   const [errorMsg, setError] = useState("");
-
-  axiosInter.interceptors.request.use(async (config: AxiosRequestConfig) => {
-    const currentDate = new Date();
-
-    if (!authState.accessToken) return Promise.reject("accessToken is null");
-    const { exp } = jwt_decode<IJwtPayload>(authState.accessToken);
-    if (exp * 1000 < currentDate.getTime()) {
-      const token = await refreshToken();
-      console.log("new tok at intercep", token);
-      if (!token) return Promise.reject("could not get new token");
-      config.headers["Authorization"] = `token ${token}`;
-    }
-    return config;
-  });
+  const axiosIntercept = useAxiosIntercept();
 
   useEffect(() => {
     (async () => {
       console.log("useeffect at home ");
       try {
-        const res = await axiosInter.get("/feed", {
+        const res = await axiosIntercept.get("/feed", {
           headers: {
             Authorization: `token ${authState.accessToken}`,
           },
@@ -48,6 +26,40 @@ export default function FeedsPage() {
       }
     })();
   }, []);
+
+  const reject = async (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+    projectId: number
+  ) => {
+    e.preventDefault();
+    try {
+      await axiosIntercept.get(`/feed/reject/${projectId}`, {
+        headers: {
+          Authorization: `token ${authState.accessToken}`,
+        },
+      });
+      setError("");
+    } catch (error) {
+      setError("server error");
+    }
+  };
+
+  const like = async (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+    projectId: number
+  ) => {
+    e.preventDefault();
+    try {
+      await axiosIntercept.get(`/feed/like/${projectId}`, {
+        headers: {
+          Authorization: `token ${authState.accessToken}`,
+        },
+      });
+      setError("");
+    } catch (error) {
+      setError("server error");
+    }
+  };
 
   if (authState.isLoading) {
     return <div>Loading</div>;
@@ -71,8 +83,12 @@ export default function FeedsPage() {
               ))}
             </ul>
             <div>
-              <button type="button">Nope</button>
-              <button type="button">Like</button>
+              <button type="button" onClick={(e) => reject(e, element.id)}>
+                Reject
+              </button>
+              <button type="button" onClick={(e) => like(e, element.id)}>
+                Like
+              </button>
             </div>
           </div>
         ))}

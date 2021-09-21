@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Switch } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
 import LoginPage from "./components/LoginPage";
 import { ProjectApp } from "./components/ProjectApp";
+import { AxiosInterceptContextProvider } from "./contexts/AxiosInterceptContext";
 
 function App() {
   return (
@@ -17,9 +18,11 @@ function App() {
               <Route path="/login" exact>
                 <LoginPage />
               </Route>
-              <Route path="/app">
-                <ProjectApp />
-              </Route>
+              <AxiosInterceptContextProvider>
+                <Route path="/app">
+                  <ProjectApp />
+                </Route>
+              </AxiosInterceptContextProvider>
             </Switch>
           </div>
         </div>
