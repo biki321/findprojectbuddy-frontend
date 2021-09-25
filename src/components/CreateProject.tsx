@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
+import { Button } from "react-bootstrap";
 import { useAuth } from "../contexts/AuthContext";
 import { useAxiosIntercept } from "../contexts/AxiosInterceptContext";
-import { IProject } from "../interfaces/project.interface";
 import { ITag } from "../interfaces/tag.interface";
+import AutoTextArea from "./AutoTextArea";
+import { TagEditor } from "./TagEditor";
 
 interface IDetails {
   projectData: {
@@ -13,7 +15,6 @@ interface IDetails {
   tagMatches: string[];
   tagSearchText: string;
   error: string;
-  isFormValid: boolean;
 }
 
 export function CreateProject() {
@@ -23,7 +24,6 @@ export function CreateProject() {
     error: "",
     tagMatches: [],
     tagSearchText: "",
-    isFormValid: false,
   } as IDetails);
   const [availableTags, setAvailableTags] = useState([] as string[]);
   const [tagToIdMap, setTagToIdMap] = useState({} as { [key: string]: number });
@@ -84,7 +84,22 @@ export function CreateProject() {
   //hanlding update tags only for now
   const submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // if (!details.isFormValid) return;
+    if (details.projectData.title.length < 10) {
+      setDetails({ ...details, error: "title should be more than 10" });
+      return;
+    }
+    if (details.projectData.description.length < 10) {
+      setDetails({ ...details, error: "description should be more than 10" });
+      return;
+    }
+    if (details.projectData.tags.length < 1) {
+      setDetails({ ...details, error: "at least 1 tag needed" });
+      return;
+    }
+
+    console.log(isFormValid());
+    if (!isFormValid()) return;
+
     try {
       const { data } = await axiosIntercept.post(
         "/projects/create",
@@ -107,11 +122,20 @@ export function CreateProject() {
         error: "",
         tagMatches: [],
         tagSearchText: "",
-        isFormValid: false,
       });
     } catch (error) {
-      setDetails({ ...details, error: "could not update" });
+      setDetails({ ...details, error: "could not create" });
     }
+  };
+
+  const isFormValid = (): boolean => {
+    return (
+      details.projectData.title.length >= 10 &&
+      details.projectData.title.length <= 250 &&
+      details.projectData.description.length >= 10 &&
+      details.projectData.description.length <= 500 &&
+      details.projectData.tags.length >= 1
+    );
   };
 
   useEffect(() => {
@@ -132,6 +156,7 @@ export function CreateProject() {
         console.log(tagToId);
         setTagToIdMap(tagToId);
         setAvailableTags(data.map((element: ITag) => element.tag));
+        setDetails({ ...details, error: "" });
       } catch (error) {
         setDetails({ ...details, error: "could not fetch" });
       }
@@ -140,35 +165,36 @@ export function CreateProject() {
 
   return (
     <form onSubmit={submitHandler}>
-      {details.error}
       <div className="form-inner">
         <h2>Create Project</h2>
+        <div style={{ color: "#FAC62B" }}>{details.error}</div>
         <div className="form-group">
           <label htmlFor="title">Title</label>
-          <input
-            type="text"
-            name="title"
-            id="title"
-            value={details.projectData.title}
+          <AutoTextArea
             onChange={(e) =>
               setDetails({
                 ...details,
                 projectData: { ...details.projectData, title: e.target.value },
                 error:
-                  e.target.value.length < 10 || e.target.value.length > 250
-                    ? "title should be between 10 to 250 characters"
+                  details.projectData.title.length > 250
+                    ? "title should be below 250"
                     : "",
               })
             }
+            minChars={10}
+            maxChars={250}
+            text={details.projectData.title}
+            rows={1}
+            required={true}
           />
         </div>
         <div className="form-group">
           <label htmlFor="description">Description</label>
-          <input
-            type="text"
-            name="description"
-            id="description"
-            value={details.projectData.description}
+          <AutoTextArea
+            required={true}
+            minChars={10}
+            maxChars={500}
+            text={details.projectData.description}
             onChange={(e) =>
               setDetails({
                 ...details,
@@ -177,56 +203,29 @@ export function CreateProject() {
                   description: e.target.value,
                 },
                 error:
-                  e.target.value.length < 10 || e.target.value.length > 500
-                    ? "title should be between 10 to 500 characters"
+                  details.projectData.description.length > 500
+                    ? "description should be below 250"
                     : "",
               })
             }
+            rows={2}
           />
         </div>
         <div className="form-group">
           <label htmlFor="tags">tags</label>
-          <div className="tag-editor-div">
-            <span id="tags-container">
-              {details.projectData.tags.map((element, index) => {
-                return (
-                  <span key={index}>
-                    <span>{element}</span>
-                    <button
-                      value={element}
-                      type="button"
-                      onClick={tagDeleteHandler}
-                    >
-                      X
-                    </button>
-                  </span>
-                );
-              })}
-            </span>
-
-            <input
-              type="text"
-              value={details.tagSearchText}
-              id="tag-input"
-              onChange={tagSearchHandler}
-              onKeyPress={(e) => {
-                e.key === "Enter" && e.preventDefault();
-              }}
-            />
-          </div>
+          <TagEditor
+            tags={details.projectData.tags}
+            tagSearchText={details.tagSearchText}
+            tagSearchHandler={tagSearchHandler}
+            tagSelectHandler={tagSelectHandler}
+            tagDeleteHandler={tagDeleteHandler}
+            tagMatches={details.tagMatches}
+          />
         </div>
-        {details.tagMatches.length !== 0 ? (
-          <div className="tag-matches-div-container">
-            {details.tagMatches.map((element, index) => (
-              <button key={index} value={element} onClick={tagSelectHandler}>
-                {element}
-              </button>
-            ))}
-          </div>
-        ) : (
-          <div></div>
-        )}
-        <button type="submit">Create</button>
+
+        <Button style={{ margin: "15px 0px" }} type="submit">
+          Create
+        </Button>
       </div>
     </form>
   );

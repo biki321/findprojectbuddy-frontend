@@ -5,6 +5,10 @@ import Typography from "@mui/material/Typography";
 import { ITag } from "../interfaces/tag.interface";
 import { NavLink } from "react-router-dom";
 import { useAxiosIntercept } from "../contexts/AxiosInterceptContext";
+import AutoTextArea from "./AutoTextArea";
+import { TagEditor } from "./TagEditor";
+import Button from "react-bootstrap/esm/Button";
+import { useParams } from "react-router-dom";
 
 interface IDetails {
   tagSearchText: string;
@@ -26,6 +30,7 @@ export default function ProfilePage() {
     error: "",
   } as IDetails);
   const axiosIntercept = useAxiosIntercept();
+  const params = useParams();
 
   const tagSearchHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     // setDetails({ ...details, tagSearchText: e.target.value });
@@ -150,62 +155,32 @@ export default function ProfilePage() {
         <div className="form-inner">
           <div className="form-group">
             <label htmlFor="Bio">Bio</label>
-            <textarea
-              name="bio"
-              id="bio-textarea"
-              cols={30}
-              rows={1}
+            <AutoTextArea
               onChange={(e) => setDetails({ ...details, bio: e.target.value })}
-              value={details.bio ? details.bio : ""}
-            ></textarea>
+              minChars={0}
+              maxChars={250}
+              text={details.bio ? details.bio : ""}
+              rows={1}
+              required={false}
+            />
           </div>
           <div className="form-group">
             <label htmlFor="tags">tags</label>
-            <div className="tag-editor-div">
-              <span id="tags-container">
-                {details.tags.map((element, index) => {
-                  return (
-                    <span key={index}>
-                      <span>{element}</span>
-                      <button
-                        value={element}
-                        type="button"
-                        onClick={tagDeleteHandler}
-                      >
-                        X
-                      </button>
-                    </span>
-                  );
-                })}
-              </span>
-
-              <input
-                type="text"
-                value={details.tagSearchText}
-                id="tag-input"
-                onChange={tagSearchHandler}
-                onKeyPress={(e) => {
-                  e.key === "Enter" && e.preventDefault();
-                }}
-              />
-            </div>
+            <TagEditor
+              tags={details.tags}
+              tagSearchText={details.tagSearchText}
+              tagSearchHandler={tagSearchHandler}
+              tagSelectHandler={tagSelectHandler}
+              tagDeleteHandler={tagDeleteHandler}
+              tagMatches={details.tagMatches}
+            />
           </div>
-
-          {details.tagMatches.length !== 0 ? (
-            <div className="tag-matches-div-container">
-              {details.tagMatches.map((element, index) => (
-                <button key={index} value={element} onClick={tagSelectHandler}>
-                  {element}
-                </button>
-              ))}
-            </div>
-          ) : (
-            <div></div>
-          )}
         </div>
 
-        <button type="submit">Save</button>
-
+        <Button style={{ margin: "15px 0px" }} type="submit">
+          Save
+        </Button>
+        <div></div>
         <NavLink to="/app/projects">Projects</NavLink>
       </form>
     </div>

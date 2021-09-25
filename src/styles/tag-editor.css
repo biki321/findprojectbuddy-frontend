@@ -1,0 +1,32 @@
+.tag-editor-div {
+  border: 1px solid #878787;
+  border-radius: 5px;
+  padding: 10px;
+}
+
+.tag-editor-div button {
+  border: none;
+  color: #0078d7;
+  margin-left: 3px;
+  background-color: #e1ecf4;
+}
+
+.tag-span,
+.tag-matches-div-container button {
+  margin: 5px 10px 5px 3px;
+  padding: 3px;
+  background-color: #e1ecf4;
+  border: none;
+}
+
+.tag-name {
+  color: #6ab1e3;
+}
+
+.tag-editor-div input {
+  outline: none;
+  border: none;
+  font-size: 16px;
+}
+
+/* #E1ECF4 */

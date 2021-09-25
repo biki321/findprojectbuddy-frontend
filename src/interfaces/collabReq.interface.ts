@@ -4,4 +4,5 @@ export interface ICollabReq {
   score: number;
   status: string;
   viewerId: number;
+  id: number;
 }

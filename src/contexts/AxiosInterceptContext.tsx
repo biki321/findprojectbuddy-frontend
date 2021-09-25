@@ -1,5 +1,5 @@
-import axios, { AxiosRequestConfig } from "axios";
-import React, { useContext, useEffect } from "react";
+import axios, { AxiosInstance, AxiosRequestConfig } from "axios";
+import React, { useContext } from "react";
 import jwt_decode from "jwt-decode";
 import { IJwtPayload } from "../interfaces/iJwtPayload.interface";
 import { useAuth } from "./AuthContext";
@@ -11,7 +11,7 @@ const axiosIns = axios.create({
   },
 });
 
-const AxiosInterceptContext = React.createContext(axiosIns);
+const AxiosInterceptContext = React.createContext({} as AxiosInstance);
 
 interface IProps {
   children: JSX.Element;
@@ -29,27 +29,27 @@ export function AxiosInterceptContextProvider({ children }: IProps) {
       "Content-Type": "application/json",
     },
   });
-  useEffect(() => {
-    axiosIntercept.interceptors.request.use(
-      async (config: AxiosRequestConfig) => {
-        const currentDate = new Date();
-        console.log("intercept");
-        console.log(authState);
-        if (!authState.accessToken) {
-          console.log("not acc at intercept token");
-          return Promise.reject("accessToken is null");
-        }
-        const { exp } = jwt_decode<IJwtPayload>(authState.accessToken);
-        if (exp * 1000 < currentDate.getTime()) {
-          const token = await refreshToken();
-          console.log("new tok at intercep", token);
-          if (!token) return Promise.reject("could not get new token");
-          config.headers["Authorization"] = `token ${token}`;
-        }
-        return config;
+
+  console.log("axiosintercept comp inside");
+
+  axiosIntercept.interceptors.request.use(
+    async (config: AxiosRequestConfig) => {
+      console.log("intercept");
+      console.log(authState);
+      if (!authState.accessToken) {
+        console.log("not acc at intercept token");
+        return Promise.reject("accessToken is null");
       }
-    );
-  }, []);
+      const { exp } = jwt_decode<IJwtPayload>(authState.accessToken);
+      if (exp * 1000 < Date.now().valueOf()) {
+        const token = await refreshToken();
+        console.log("new tok at intercep", token);
+        if (!token) return Promise.reject("could not get new token");
+        config.headers["Authorization"] = `token ${token}`;
+      }
+      return config;
+    }
+  );
 
   return (
     <AxiosInterceptContext.Provider value={axiosIntercept}>

@@ -2,6 +2,7 @@ import { useAuth } from "../contexts/AuthContext";
 import { useEffect, useState } from "react";
 import { IFeed } from "../interfaces/feed.interface";
 import { useAxiosIntercept } from "../contexts/AxiosInterceptContext";
+import { FeedComp } from "./FeedComp";
 
 export default function FeedsPage() {
   const { authState } = useAuth();
@@ -22,14 +23,15 @@ export default function FeedsPage() {
         setFeeds(res.data);
         setError("");
       } catch (error) {
-        setError("no feed available");
+        setError("server error");
       }
     })();
   }, []);
 
   const reject = async (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-    projectId: number
+    projectId: number,
+    feedId: number
   ) => {
     e.preventDefault();
     try {
@@ -38,6 +40,11 @@ export default function FeedsPage() {
           Authorization: `token ${authState.accessToken}`,
         },
       });
+      setFeeds(
+        feeds.map((element) =>
+          element.id === feedId ? { ...element, status: "rejected" } : element
+        )
+      );
       setError("");
     } catch (error) {
       setError("server error");
@@ -46,7 +53,8 @@ export default function FeedsPage() {
 
   const like = async (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-    projectId: number
+    projectId: number,
+    feedId: number
   ) => {
     e.preventDefault();
     try {
@@ -55,6 +63,11 @@ export default function FeedsPage() {
           Authorization: `token ${authState.accessToken}`,
         },
       });
+      setFeeds(
+        feeds.map((element) =>
+          element.id === feedId ? { ...element, status: "liked" } : element
+        )
+      );
       setError("");
     } catch (error) {
       setError("server error");
@@ -71,26 +84,15 @@ export default function FeedsPage() {
     <div className="feeds-page">
       <div className=""></div>
       <div className="feeds">
-        <h1>Feeds</h1>
         <div>{errorMsg}</div>
+        {feeds.length === 0 ? "no feed available" : ""}
         {feeds.map((element) => (
-          <div className="feed" key={element.id}>
-            <div>title: {element.title}</div>
-            <div>description: {element.description}</div>
-            <ul>
-              {element.tags.map((tag) => (
-                <li key={tag.id}>{tag.tag}</li>
-              ))}
-            </ul>
-            <div>
-              <button type="button" onClick={(e) => reject(e, element.id)}>
-                Reject
-              </button>
-              <button type="button" onClick={(e) => like(e, element.id)}>
-                Like
-              </button>
-            </div>
-          </div>
+          <FeedComp
+            key={element.id}
+            feed={element}
+            like={like}
+            reject={reject}
+          />
         ))}
       </div>
     </div>

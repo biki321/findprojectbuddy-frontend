@@ -33,13 +33,26 @@ export function MiniInfoPanel() {
     <div>
       <div className="info-panel">mini window</div>
       <NavLink to="/app/projects/create">Create Project</NavLink>
-      <NavLink to="/app/projects/requests">
-        <div>{noOfCollabReq} Requests</div>
-      </NavLink>
-      <NavLink to="/app/projects/requests">
-        <div>{noOfAccReq} Accepteed</div>
-      </NavLink>
+      <div></div>
       <NavLink to="/app/feeds">feed </NavLink>
+      <div></div>
+      <NavLink to="/app/profile">Profile </NavLink>
+      <div></div>
+      <NavLink to="/app/projects">Projects </NavLink>
+      <div></div>
+      {noOfCollabReq !== 0 ? (
+        <NavLink to="/app/projects">{`${noOfCollabReq} requests`}</NavLink>
+      ) : (
+        <div></div>
+      )}
+      <div></div>
+      {noOfAccReq !== 0 ? (
+        <NavLink to="/app/accepted">{`${noOfAccReq} Accepted`}</NavLink>
+      ) : (
+        <div></div>
+      )}
+      <div></div>
+      <NavLink to="/app/chat">Chat </NavLink>
     </div>
   );
 }

@@ -1,9 +1,13 @@
-import { ITag } from "./tag.interface";
+import { IProject } from "./project.interface";
+import { IUser } from "./user.interface";
 
 export interface IFeed {
+  projectId: number;
+  projectOwnerId: number;
+  score: number;
+  status: string;
+  viewerId: number;
   id: number;
-  ownerId: number;
-  title: string;
-  description: string;
-  tags: ITag[];
+  project: IProject;
+  projectOwner: IUser;
 }
