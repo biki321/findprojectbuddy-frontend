@@ -165,6 +165,7 @@ export function CreateProject() {
         setDetails({ ...details, error: "could not fetch" });
       }
     })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (!authState.isAuthenticated) {
