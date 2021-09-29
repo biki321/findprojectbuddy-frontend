@@ -1,5 +1,5 @@
 import Avatar from "@mui/material/Avatar";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import { useAxiosIntercept } from "../contexts/AxiosInterceptContext";
 import { useSocketContext } from "../contexts/SocketContext";
@@ -41,6 +41,35 @@ export function ChatComp() {
     _setFriends(x);
   };
 
+  const onMsgReceiveHandler = useCallback(
+    ({ text, senderId, receiverId, id, sent }: IMessage) => {
+      console.log("text at onMsgReceiveHandler", text);
+      console.log("details at onMsgReceiveHandler ", detailsRef);
+      console.log("frnds at onMsgReceiveHandler ", friendsRef);
+
+      setDetails(
+        detailsRef.current.map((element) =>
+          element.partnerId === senderId
+            ? {
+                ...element,
+                messages: [
+                  ...element.messages,
+                  {
+                    text: text,
+                    senderId: senderId,
+                    receiverId: receiverId,
+                    id: id,
+                    sent: sent,
+                  },
+                ],
+              }
+            : element
+        )
+      );
+    },
+    []
+  );
+
   useEffect(() => {
     console.log("useeffec at chatcomp\n");
     console.log("socket at chatcomp usueeffect", socket);
@@ -80,39 +109,7 @@ export function ChatComp() {
       socket?.off("message");
       socket?.offAny();
     };
-  }, [socket]);
-
-  function onMsgReceiveHandler({
-    text,
-    senderId,
-    receiverId,
-    id,
-    sent,
-  }: IMessage) {
-    console.log("text at onMsgReceiveHandler", text);
-    console.log("details at onMsgReceiveHandler ", detailsRef);
-    console.log("frnds at onMsgReceiveHandler ", friendsRef);
-
-    setDetails(
-      detailsRef.current.map((element) =>
-        element.partnerId === senderId
-          ? {
-              ...element,
-              messages: [
-                ...element.messages,
-                {
-                  text: text,
-                  senderId: senderId,
-                  receiverId: receiverId,
-                  id: id,
-                  sent: sent,
-                },
-              ],
-            }
-          : element
-      )
-    );
-  }
+  }, [authState.accessToken, axiosIntercept, onMsgReceiveHandler, socket]);
 
   const handleSendMsg = (
     text: string,

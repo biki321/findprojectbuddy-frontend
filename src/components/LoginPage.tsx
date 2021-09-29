@@ -41,7 +41,7 @@ export default function LoginPage() {
         });
       }
     })();
-  }, [login]);
+  }, [from, history, login]);
   console.log("isAuthenticated", authState.isAuthenticated);
 
   if (authState.isLoading) {

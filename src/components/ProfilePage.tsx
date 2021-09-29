@@ -8,7 +8,7 @@ import { useAxiosIntercept } from "../contexts/AxiosInterceptContext";
 import AutoTextArea from "./AutoTextArea";
 import { TagEditor } from "./TagEditor";
 import Button from "react-bootstrap/esm/Button";
-import { useParams } from "react-router-dom";
+// import { useParams } from "react-router-dom";
 import Spinner from "react-bootstrap/esm/Spinner";
 import { useHistory } from "react-router";
 import { Redirect } from "react-router";
@@ -34,7 +34,7 @@ export default function ProfilePage() {
   } as IDetails);
   const [loading, setLoading] = useState(true);
   const axiosIntercept = useAxiosIntercept();
-  const params = useParams();
+  // const params = useParams();
   const history = useHistory();
 
   const tagSearchHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -153,7 +153,8 @@ export default function ProfilePage() {
       }
       setLoading(false);
     })();
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [authState.accessToken, axiosIntercept]);
 
   if (!authState.isAuthenticated) {
     return <Redirect to="/" />;

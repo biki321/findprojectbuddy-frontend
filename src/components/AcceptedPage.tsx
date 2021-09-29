@@ -89,7 +89,7 @@ export function AcceptedPage() {
     } catch (error) {
       setError("could not fetch");
     }
-  }, []);
+  }, [authState.accessToken, axiosIntercept]);
 
   const reject = async (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
@@ -119,6 +119,7 @@ export function AcceptedPage() {
   }
   return (
     <div>
+      {error}
       {details.map((element: IDetail) =>
         element.status === "accepted" ? (
           <div key={element.id} style={{ marginTop: "20px" }}>

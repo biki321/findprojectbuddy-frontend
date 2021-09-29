@@ -36,7 +36,7 @@ export default function OthersProfile() {
         setDetails({ ...details, error: "could not fetch" });
       }
     })();
-  }, []);
+  }, [authState.accessToken, axiosIntercept, details, params.id]);
 
   return <ProfileComp user={details.user} />;
 }

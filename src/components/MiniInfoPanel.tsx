@@ -55,7 +55,7 @@ export function MiniInfoPanel() {
     })();
 
     // return () => clearInterval(timeInterval);
-  }, []);
+  }, [authState.accessToken, axiosIntercept]);
 
   const onClickRequest = () => {
     // axiosIntercept.get("/notification/reqAccepted/read");

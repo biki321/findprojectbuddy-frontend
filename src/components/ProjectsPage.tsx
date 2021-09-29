@@ -59,7 +59,7 @@ export function ProjectsPage() {
       }
       setLoading(false);
     })();
-  }, []);
+  }, [authState.accessToken, axiosIntercept]);
 
   const handleProjectDelete = async (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
@@ -99,6 +99,7 @@ export function ProjectsPage() {
     </div>
   ) : (
     <div>
+      {error}
       {projectsAndReqs.map((pAndR) => (
         <div key={pAndR.project.id}>
           <ProjectComp project={pAndR.project} />

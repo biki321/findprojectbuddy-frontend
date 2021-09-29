@@ -31,7 +31,7 @@ export default function FeedsPage() {
       }
       setLoading(false);
     })();
-  }, []);
+  }, [authState.accessToken, axiosIntercept]);
 
   const reject = async (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,

@@ -63,7 +63,7 @@ export function ProjectCollabs() {
       setError("could not fetch");
     }
     setLoading(false);
-  }, []);
+  }, [authState.accessToken, axiosIntercept, params.id]);
 
   const accept = async (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
