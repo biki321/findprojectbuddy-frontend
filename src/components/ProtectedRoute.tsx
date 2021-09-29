@@ -12,8 +12,9 @@ export default function ProtectedRoute({ children, ...rest }: IProps) {
   return (
     <Route
       {...rest}
-      render={({ location }) =>
-        authState.isAuthenticated ? (
+      render={({ location }) => {
+        console.log("at protected route", location);
+        return authState.isAuthenticated ? (
           children
         ) : (
           <Redirect
@@ -22,8 +23,8 @@ export default function ProtectedRoute({ children, ...rest }: IProps) {
               state: { from: location },
             }}
           />
-        )
-      }
+        );
+      }}
     />
   );
 }

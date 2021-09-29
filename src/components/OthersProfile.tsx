@@ -1,12 +1,8 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
-import Avatar from "@mui/material/Avatar";
-import Typography from "@mui/material/Typography";
 import { useAxiosIntercept } from "../contexts/AxiosInterceptContext";
 import { useParams } from "react-router-dom";
 import { IUser } from "../interfaces/user.interface";
-import { ITag } from "../interfaces/tag.interface";
-import Badge from "react-bootstrap/Badge";
 import { ProfileComp } from "./ProfileComp";
 
 interface IDetails {

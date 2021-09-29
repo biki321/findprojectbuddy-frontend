@@ -3,11 +3,15 @@ import { useEffect, useState } from "react";
 import { IFeed } from "../interfaces/feed.interface";
 import { useAxiosIntercept } from "../contexts/AxiosInterceptContext";
 import { FeedComp } from "./FeedComp";
+import Spinner from "react-bootstrap/esm/Spinner";
+import { Redirect } from "react-router";
+import { Link } from "react-router-dom";
 
 export default function FeedsPage() {
   const { authState } = useAuth();
   const [feeds, setFeeds] = useState<IFeed[]>([]);
   const [errorMsg, setError] = useState("");
+  const [loading, setLoading] = useState(true);
   const axiosIntercept = useAxiosIntercept();
 
   useEffect(() => {
@@ -25,6 +29,7 @@ export default function FeedsPage() {
       } catch (error) {
         setError("server error");
       }
+      setLoading(false);
     })();
   }, []);
 
@@ -74,13 +79,37 @@ export default function FeedsPage() {
     }
   };
 
-  if (authState.isLoading) {
-    return <div>Loading</div>;
+  if (!authState.isAuthenticated) {
+    return <Redirect to="/" />;
   }
 
   console.log("is auth at feed page", authState.isAuthenticated);
 
-  return (
+  return loading ? (
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        height: "100vh",
+      }}
+    >
+      <Spinner animation="border" variant="primary" />
+    </div>
+  ) : feeds.length === 0 ? (
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      <p>Update technologies you know in profile</p>
+      <Link to="/profile" style={{ textDecoration: "none", marginTop: "20px" }}>
+        Update tags
+      </Link>
+    </div>
+  ) : (
     <div className="feeds-page">
       <div className=""></div>
       <div className="feeds">

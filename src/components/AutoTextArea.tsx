@@ -8,6 +8,8 @@ interface IProps {
   text: string;
   rows: number;
   required: boolean;
+  style?: Object;
+  placeholder?: string;
 }
 
 const AutoTextArea = ({
@@ -17,6 +19,8 @@ const AutoTextArea = ({
   text,
   rows,
   required,
+  style,
+  placeholder,
 }: IProps) => {
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const [textAreaHeight, setTextAreaHeight] = useState("auto");
@@ -39,6 +43,7 @@ const AutoTextArea = ({
     <div
       style={{
         minHeight: parentHeight,
+        width: "100%",
       }}
     >
       <textarea
@@ -48,7 +53,9 @@ const AutoTextArea = ({
         rows={rows}
         style={{
           height: textAreaHeight,
+          ...style,
         }}
+        placeholder={placeholder ?? ""}
         onChange={onChangeHandler}
         value={text}
       />

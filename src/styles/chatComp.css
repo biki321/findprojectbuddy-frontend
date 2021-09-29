@@ -1,0 +1,12 @@
+.friends-div {
+  overflow-y: auto;
+}
+.friends-div::-webkit-scrollbar {
+  display: none;
+}
+
+.chat-div {
+  width: "100%";
+  margin-top: 10px;
+  margin-bottom: 10px;
+}

@@ -12,7 +12,7 @@ export function ProjectComp(props: IProps) {
       key={props.project.id}
       style={{ marginTop: "20px" }}
     >
-      <Card style={{ width: "18rem" }}>
+      <Card style={{}}>
         <Card.Body>
           <Card.Title>{props.project.title}</Card.Title>
           <Card.Text>{props.project.description}</Card.Text>

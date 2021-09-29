@@ -20,14 +20,23 @@ interface IProps {
 export function FeedComp({ feed, like, reject }: IProps) {
   return (
     <div className="feed" key={feed.id} style={{ marginTop: "20px" }}>
-      <Card style={{ width: "18rem" }}>
+      <Card style={{}}>
         <Card.Body>
-          <div style={{ display: "flex", alignContent: "center" }}>
+          <div style={{ display: "flex", alignItems: "center" }}>
             <Avatar
               src={feed.projectOwner.avatar ?? undefined}
               sx={{ width: 40, height: 40 }}
             />
-            <NavLink to={`/app/profile/${feed.projectOwner.id}`}>
+            <NavLink
+              to={`/app/profile/${feed.projectOwner.id}`}
+              style={{
+                textDecoration: "none",
+                color: "black",
+                fontSize: "11px",
+                fontWeight: "bolder",
+                margin: "0px 5px",
+              }}
+            >
               {feed.projectOwner.handle}
             </NavLink>
           </div>

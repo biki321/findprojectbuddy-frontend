@@ -6,6 +6,9 @@ import { useSocketContext } from "../contexts/SocketContext";
 import { IMessage } from "../interfaces/message.interface";
 import { IUser } from "../interfaces/user.interface";
 import { ConversationComp } from "./ConversationComp";
+import { Card, Spinner } from "react-bootstrap";
+import "../styles/chatComp.css";
+import { Redirect } from "react-router";
 
 //page null means messages for userId have not been fetched
 //even a single time
@@ -22,6 +25,7 @@ export function ChatComp() {
   const [currentConvUserId, setCurrentConvUserId] = useState<null | number>(
     null
   );
+  const [loading, setLoading] = useState(true);
   const axiosIntercept = useAxiosIntercept();
   const { authState } = useAuth();
 
@@ -58,6 +62,7 @@ export function ChatComp() {
           }))
         );
       } catch (error) {}
+      setLoading(false);
     })();
 
     socket?.onAny((event, ...args) => {
@@ -119,6 +124,24 @@ export function ChatComp() {
       receiverId: receiverId,
       senderId: senderId,
     });
+
+    setDetails(
+      details.map((element) =>
+        element.partnerId === receiverId
+          ? {
+              ...element,
+              messages: [
+                ...element.messages,
+                {
+                  text: text,
+                  senderId: senderId,
+                  receiverId: receiverId,
+                },
+              ],
+            }
+          : element
+      )
+    );
     console.log("details at handleSendMSg", details);
   };
 
@@ -139,51 +162,67 @@ export function ChatComp() {
       )
     );
   };
+  const handleBackBtnFromConv = () => {
+    setCurrentConvUserId(null);
+  };
+
+  if (!authState.isAuthenticated) {
+    return <Redirect to="/" />;
+  }
 
   return (
-    <div>
-      <div className="chat-div">
-        {currentConvUserId ? (
-          <ConversationComp
-            partner={
-              friends.find((element) => element.id === currentConvUserId)!
-            }
-            data={
-              details.find(
-                (element) => element.partnerId === currentConvUserId
-              )!
-            }
-            handleSetMsgs={handleSetDetailsFromChild}
-            handleSendMsg={handleSendMsg}
-          />
-        ) : (
-          <div className="friends-div">
-            {friends.map((friend: IUser) => (
-              <div
+    <div className="chat-div">
+      {loading ? (
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            height: "100vh",
+          }}
+        >
+          <Spinner animation="border" variant="primary" />
+        </div>
+      ) : currentConvUserId ? (
+        <ConversationComp
+          partner={friends.find((element) => element.id === currentConvUserId)!}
+          data={
+            details.find((element) => element.partnerId === currentConvUserId)!
+          }
+          handleSetMsgs={handleSetDetailsFromChild}
+          handleSendMsg={handleSendMsg}
+          handleBackBtnFromConv={handleBackBtnFromConv}
+        />
+      ) : (
+        <div className="friends-div">
+          {friends.map((friend: IUser) => (
+            <div className="friends-inner-div">
+              <Card
                 key={friend.id}
-                style={{ display: "flex" }}
                 onClick={(e) => setCurrentConvUserId(friend.id)}
               >
-                <Avatar
-                  src={friend.avatar ?? undefined}
-                  sx={{ width: 80, height: 80 }}
-                />
-                <div>
-                  <div>{friend.name ?? friend.handle}</div>
-                </div>
-                <br />
-                <br />
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-      chat
-      <button
-        onClick={(e) => console.log("details at send chatbtn,  ", details)}
-      >
-        send
-      </button>
+                <Card.Body
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    padding: "8px",
+                  }}
+                >
+                  <Avatar
+                    src={friend.avatar ?? undefined}
+                    sx={{ width: 50, height: 50 }}
+                  />
+                  <div style={{}}>
+                    <div style={{ margin: "auto 20px", fontWeight: "bolder" }}>
+                      {friend.name ?? friend.handle}
+                    </div>
+                  </div>
+                </Card.Body>
+              </Card>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

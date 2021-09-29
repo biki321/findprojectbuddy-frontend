@@ -4,13 +4,6 @@ import jwt_decode from "jwt-decode";
 import { IJwtPayload } from "../interfaces/iJwtPayload.interface";
 import { useAuth } from "./AuthContext";
 
-const axiosIns = axios.create({
-  baseURL: "http://localhost:8080/api/v1",
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
-
 const AxiosInterceptContext = React.createContext({} as AxiosInstance);
 
 interface IProps {
@@ -24,7 +17,7 @@ export function useAxiosIntercept() {
 export function AxiosInterceptContextProvider({ children }: IProps) {
   const { authState, refreshToken } = useAuth();
   const axiosIntercept = axios.create({
-    baseURL: "http://localhost:8080/api/v1",
+    baseURL: process.env.REACT_APP_BASE_URL,
     headers: {
       "Content-Type": "application/json",
     },

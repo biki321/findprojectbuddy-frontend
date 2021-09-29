@@ -1,13 +1,13 @@
 .tag-editor-div {
   border: 1px solid #878787;
   border-radius: 5px;
-  padding: 10px;
+  padding: 8px;
 }
 
 .tag-editor-div button {
   border: none;
   color: #0078d7;
-  margin-left: 3px;
+  margin: 3px;
   background-color: #e1ecf4;
 }
 

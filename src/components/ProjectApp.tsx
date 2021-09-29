@@ -4,18 +4,18 @@ import "../styles/projectApp.css";
 import FeedsPage from "./FeedsPage";
 import { ProjectsPage } from "./ProjectsPage";
 import { CreateProject } from "./CreateProject";
-import { MiniInfoPanel } from "./MiniInfoPanel";
 import { useAuth } from "../contexts/AuthContext";
 import { ProjectCollabs } from "./ProjectCollabs";
 import OthersProfile from "./OthersProfile";
 import { AcceptedPage } from "./AcceptedPage";
 import { ChatComp } from "./ChatComp";
+import NavbarComp from "./NavbarComp";
 
 export function ProjectApp() {
   const { authState } = useAuth();
   return (
     <div className="project-app">
-      {authState.isAuthenticated ? <MiniInfoPanel /> : <div></div>}
+      {authState.isAuthenticated ? <NavbarComp /> : <div></div>}
 
       <div className="central-box">
         <ProtectedRoute path="/app/feeds" exact>

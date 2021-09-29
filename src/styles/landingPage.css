@@ -1,0 +1,86 @@
+.landinPage-div {
+  background-color: #000000;
+  height: 100vh;
+  width: 100%;
+  max-width: 1900px;
+}
+.landinPage-div .brand-name {
+  margin-left: 5vw;
+  padding-top: 20px;
+}
+.landinPage-div .brand-name a {
+  text-decoration: none;
+  color: #fcfcfc;
+}
+
+.middle-content #title {
+  color: #e4efb8;
+  font-weight: 900;
+  font-size: 3.5rem;
+}
+
+.middle-content #descripton {
+  color: #fbf6f6;
+  font-weight: 100;
+  width: 400px;
+  margin-bottom: 20px;
+  /* font-size: ; */
+}
+
+.product-illus img {
+  width: 400px;
+}
+
+.middle-content {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin-top: 10vh;
+}
+.middle-content .login-btn {
+  padding: 8px;
+  /* margin: 50px 0px; */
+  border-radius: 5px;
+  text-decoration: none;
+  font-weight: 400;
+  color: white;
+  border: #fbf6f6 solid 2px;
+  text-align: center;
+  transition: all 0.2s;
+}
+
+.middle-content .login-btn:hover {
+  border: none !important;
+}
+
+@media (max-width: 768px) {
+  .landinPage-div {
+    height: 100%;
+  }
+  .middle-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .middle-content .product-moto {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .middle-content #descripton {
+    width: 400px;
+  }
+  .product-illus img {
+    width: 350px;
+    margin: 30px auto;
+  }
+}
+
+@media (max-width: 360px) {
+  .middle-content #descripton {
+    width: 250px;
+  }
+  .product-illus img {
+    width: 85vw;
+  }
+}

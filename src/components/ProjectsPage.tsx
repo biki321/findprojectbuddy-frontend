@@ -6,6 +6,8 @@ import { useAxiosIntercept } from "../contexts/AxiosInterceptContext";
 import { ProjectComp } from "./ProjectComp";
 import { NavLink } from "react-router-dom";
 import Button from "react-bootstrap/Button";
+import Spinner from "react-bootstrap/esm/Spinner";
+import { Redirect } from "react-router";
 
 export function ProjectsPage() {
   const { authState } = useAuth();
@@ -13,6 +15,7 @@ export function ProjectsPage() {
     { project: IProject; reqs: ICollabReq[]; accepted: ICollabReq[] }[]
   >([]);
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(true);
   const axiosIntercept = useAxiosIntercept();
 
   useEffect(() => {
@@ -54,6 +57,7 @@ export function ProjectsPage() {
       } catch (error) {
         setError("could not fetch projects");
       }
+      setLoading(false);
     })();
   }, []);
 
@@ -61,6 +65,7 @@ export function ProjectsPage() {
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
     projectId: number
   ) => {
+    setLoading(true);
     try {
       await axiosIntercept.delete(`/projects/${projectId}`, {
         headers: {
@@ -74,32 +79,58 @@ export function ProjectsPage() {
     } catch (error) {
       setError("can not delete");
     }
+    setLoading(false);
   };
 
-  return (
+  if (!authState.isAuthenticated) {
+    return <Redirect to="/" />;
+  }
+
+  return loading ? (
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        height: "100vh",
+      }}
+    >
+      <Spinner animation="border" variant="primary" />
+    </div>
+  ) : (
     <div>
-      <h1>projects</h1>
       {projectsAndReqs.map((pAndR) => (
         <div key={pAndR.project.id}>
           <ProjectComp project={pAndR.project} />
-          <Button
-            type="button"
-            variant="outline-danger"
-            size="sm"
-            onClick={(e) => handleProjectDelete(e, pAndR.project.id)}
-          >
-            Delete
-          </Button>
-          <NavLink
-            to={{
-              pathname: `/app/projects/${pAndR.project.id}/requests`,
-              state: {
-                props: { collabReqs: pAndR.reqs.concat(pAndR.accepted) },
-              },
-            }}
-          >
-            {pAndR.reqs.length > 0 ? `${pAndR.reqs.length} requests` : "people"}
-          </NavLink>
+          <div style={{ marginTop: "10px" }}>
+            <Button
+              type="button"
+              variant="outline-danger"
+              size="sm"
+              onClick={(e) => handleProjectDelete(e, pAndR.project.id)}
+            >
+              Delete
+            </Button>
+            <NavLink
+              to={{
+                pathname: `/app/projects/${pAndR.project.id}/requests`,
+                state: {
+                  props: { collabReqs: pAndR.reqs.concat(pAndR.accepted) },
+                },
+              }}
+              style={{
+                textDecoration: "none",
+                // color: "black",
+                // fontSize: "11px",
+                fontWeight: "bolder",
+                margin: "0px 10px",
+              }}
+            >
+              {pAndR.reqs.length > 0
+                ? `${pAndR.reqs.length} requests`
+                : `${pAndR.accepted.length} people`}
+            </NavLink>
+          </div>
         </div>
       ))}
     </div>

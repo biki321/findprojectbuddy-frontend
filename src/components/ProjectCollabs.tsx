@@ -8,6 +8,7 @@ import { useAxiosIntercept } from "../contexts/AxiosInterceptContext";
 import { ICollabReq } from "../interfaces/collabReq.interface";
 import { IUser } from "../interfaces/user.interface";
 import { ProfileComp } from "./ProfileComp";
+import Spinner from "react-bootstrap/esm/Spinner";
 
 interface IDetail extends ICollabReq {
   viewer: IUser;
@@ -16,6 +17,7 @@ interface IDetail extends ICollabReq {
 export function ProjectCollabs() {
   const [error, setError] = useState("");
   const [details, setDetails] = useState([] as IDetail[]);
+  const [loading, setLoading] = useState(true);
   const axiosIntercept = useAxiosIntercept();
   const { authState } = useAuth();
   const params: { id: string } = useParams();
@@ -60,6 +62,7 @@ export function ProjectCollabs() {
     } catch (error) {
       setError("could not fetch");
     }
+    setLoading(false);
   }, []);
 
   const accept = async (
@@ -69,6 +72,7 @@ export function ProjectCollabs() {
     reqId: number
   ) => {
     e.preventDefault();
+    setLoading(true);
     try {
       await axiosIntercept.get(
         `/user/collabReqGot/accept/${projectId}/${viewerId}`,
@@ -87,6 +91,7 @@ export function ProjectCollabs() {
     } catch (error) {
       setError("server error");
     }
+    setLoading(false);
   };
 
   const reject = async (
@@ -96,6 +101,7 @@ export function ProjectCollabs() {
     reqId: number
   ) => {
     e.preventDefault();
+    setLoading(true);
     try {
       await axiosIntercept.get(
         `user/collabReqGot/reject/${projectId}/${viewerId}`,
@@ -114,9 +120,21 @@ export function ProjectCollabs() {
     } catch (error) {
       setError("server error");
     }
+    setLoading(false);
   };
 
-  return (
+  return loading ? (
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        height: "100vh",
+      }}
+    >
+      <Spinner animation="border" variant="primary" />
+    </div>
+  ) : (
     <div>
       {error}
       <Tabs

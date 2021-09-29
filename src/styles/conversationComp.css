@@ -1,0 +1,96 @@
+.conv-div {
+  height: calc(100vh - 50px);
+  width: 100%;
+  margin-bottom: 50px;
+  /* overflow: hidden; */
+  /* position: fixed; */
+}
+
+.messageToPerson {
+  position: sticky;
+  top: 0px;
+  /* width: 100%; */
+  display: flex;
+  background-color: #1877f2;
+}
+
+.messageBox {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  height: 100%;
+  width: 100%;
+  overflow-y: scroll;
+  /* margin-top: 50px; */
+  margin-bottom: 0px;
+}
+
+* ::-webkit-scrollbar {
+  display: none;
+}
+.conv-div::-webkit-scrollbar {
+  display: none;
+}
+
+.messageText {
+  padding: 8px;
+  border-radius: 15px;
+  background-color: #1877f2;
+  color: white;
+  min-width: 90px;
+  max-width: 250px;
+  overflow-wrap: break-word;
+}
+
+.ownMessage {
+  align-self: flex-end;
+  background-color: #779ccc;
+}
+
+.otherMessage {
+  align-self: flex-start;
+}
+
+.messageSendDiv {
+  display: flex;
+  align-items: center;
+  position: sticky;
+  bottom: 0;
+  width: 100%;
+  margin-top: 0px;
+}
+
+.msgSendBtnDiv button {
+  margin: 0px 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  outline: none;
+  border: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 50px;
+  background-color: #1877f2;
+}
+
+.messageToPerson .backbtn {
+  margin: auto 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  outline: none;
+  border: none;
+  width: 30px;
+  height: 30px;
+  /* border-radius: 50px; */
+  /* background-color: #1877f2; */
+}
+
+@media (max-width: 768px) {
+  .messageText {
+    max-width: 180px;
+  }
+  .messageToPerson {
+    top: 0px;
+  }
+}

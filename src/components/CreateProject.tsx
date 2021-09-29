@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
-import { Button } from "react-bootstrap";
+import { Button, Spinner } from "react-bootstrap";
 import { useAuth } from "../contexts/AuthContext";
 import { useAxiosIntercept } from "../contexts/AxiosInterceptContext";
 import { ITag } from "../interfaces/tag.interface";
 import AutoTextArea from "./AutoTextArea";
 import { TagEditor } from "./TagEditor";
+import { Redirect } from "react-router";
 
 interface IDetails {
   projectData: {
@@ -25,6 +26,7 @@ export function CreateProject() {
     tagMatches: [],
     tagSearchText: "",
   } as IDetails);
+  const [loading, setLoading] = useState(false);
   const [availableTags, setAvailableTags] = useState([] as string[]);
   const [tagToIdMap, setTagToIdMap] = useState({} as { [key: string]: number });
   const axiosIntercept = useAxiosIntercept();
@@ -100,6 +102,7 @@ export function CreateProject() {
     console.log(isFormValid());
     if (!isFormValid()) return;
 
+    setLoading(true);
     try {
       const { data } = await axiosIntercept.post(
         "/projects/create",
@@ -126,6 +129,7 @@ export function CreateProject() {
     } catch (error) {
       setDetails({ ...details, error: "could not create" });
     }
+    setLoading(false);
   };
 
   const isFormValid = (): boolean => {
@@ -163,9 +167,13 @@ export function CreateProject() {
     })();
   }, []);
 
+  if (!authState.isAuthenticated) {
+    return <Redirect to="/" />;
+  }
+
   return (
     <form onSubmit={submitHandler}>
-      <div className="form-inner">
+      <div className="form-inner" style={{ marginTop: "10px" }}>
         <h2>Create Project</h2>
         <div style={{ color: "#FAC62B" }}>{details.error}</div>
         <div className="form-group">
@@ -224,6 +232,15 @@ export function CreateProject() {
         </div>
 
         <Button style={{ margin: "15px 0px" }} type="submit">
+          {loading ? (
+            <Spinner
+              as="span"
+              animation="border"
+              size="sm"
+              role="status"
+              aria-hidden="true"
+            />
+          ) : null}
           Create
         </Button>
       </div>

@@ -9,6 +9,7 @@ import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import Badge from "react-bootstrap/Badge";
 import Avatar from "@mui/material/Avatar";
+import { Redirect } from "react-router";
 
 interface IDetail extends ICollabReq {
   owner: IUser;
@@ -113,6 +114,9 @@ export function AcceptedPage() {
     }
   };
 
+  if (!authState.isAuthenticated) {
+    return <Redirect to="/" />;
+  }
   return (
     <div>
       {details.map((element: IDetail) =>

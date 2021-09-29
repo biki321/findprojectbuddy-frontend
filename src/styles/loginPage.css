@@ -1,0 +1,28 @@
+.login-page-div {
+  height: 100vh;
+  background-color: #251d1d;
+  color: #e4efb8;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.login-page-div h1 {
+  margin-bottom: 20px;
+}
+
+.login-page-div a {
+  padding: 8px;
+  /* margin: 50px 0px; */
+  border-radius: 5px;
+  text-decoration: none;
+  font-weight: 400;
+  color: white;
+  border: #fbf6f6 solid 2px;
+  text-align: center;
+  transition: all 0.2s;
+}
+/*   
+  .middle-content .login-btn:hover {
+    border: none !important;
+  } */

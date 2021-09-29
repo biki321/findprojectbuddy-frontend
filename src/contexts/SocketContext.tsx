@@ -39,6 +39,7 @@ export function SocketContextProvider({ children }: IProps) {
   );
 
   useEffect(() => {
+    // if (authState.isAuthenticated) {
     console.log("sueeffect at sockt context");
     // if (authState.accessToken) {
     const newSocket = io("http://localhost:8080", socketOptions);

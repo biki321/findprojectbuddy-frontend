@@ -1,7 +1,19 @@
 .project-app {
   display: flex;
+  width: 100%;
 }
-.info-panel {
-  width: 200px;
-  max-width: 200px;
+.central-box {
+  margin: 10px auto;
+  width: 100%;
+  max-width: 500px;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+@media (max-width: 768px) {
+  .project-app {
+    display: block;
+  }
+  .central-box {
+    margin-top: 50px;
+  }
 }

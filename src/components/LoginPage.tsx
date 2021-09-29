@@ -1,6 +1,8 @@
 import React, { useEffect } from "react";
+import Spinner from "react-bootstrap/esm/Spinner";
 import { Redirect, useHistory, useLocation } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
+import "../styles/loginPage.css";
 
 interface LocationState {
   from: {
@@ -9,8 +11,9 @@ interface LocationState {
 }
 
 export default function LoginPage() {
-  const clientId = "1740fb170d3dc741cd02";
-  const redirectUri = "http://localhost:3000/login";
+  const clientId = process.env.REACT_APP_CLIENT_ID;
+  const redirectUri = process.env.REACT_APP_REDIRECT_URL;
+  console.log(" process.env", process.env.REACT_APP_CLIENT_ID);
   const { authState, login } = useAuth();
   const location = useLocation<LocationState>();
   const history = useHistory();
@@ -25,13 +28,15 @@ export default function LoginPage() {
       // If Github API returns the code parameter
       if (hasCode) {
         const newUrl = url.split("?code=");
-        // window.history.replaceState({}, "", newUrl[0]);
+        window.history.replaceState({}, "", newUrl[0]);
 
         const requestData = {
           code: newUrl[1],
         };
+        console.log("at login page ", from);
 
         await login(requestData.code, () => {
+          console.log("at login func ", from);
           history.replace(from);
         });
       }
@@ -46,35 +51,32 @@ export default function LoginPage() {
   if (authState.isAuthenticated) {
     // console.log("isAuthenticated", authState.isAuthenticated);
     // history.replace("/home");
+    console.log("login page authState.isAuthenticated", from);
     return <Redirect to={from.pathname} />;
   }
 
   return (
-    <section className="container">
-      <div>
-        <h1>Welcome</h1>
-        <span>Super amazing app</span>
-        <div>{authState.error}</div>
-        <div className="login-container">
-          {authState.isLoading ? (
-            <div className="loader-container">
-              <div className="loader">Loading</div>
-            </div>
-          ) : (
-            <div>
-              {
-                // Link to request GitHub access
-              }
-              <a
-                className="login-link"
-                href={`https://github.com/login/oauth/authorize?scope=user&client_id=${clientId}&redirect_uri=${redirectUri}`}
-              >
-                <span>Login with GitHub</span>
-              </a>
-            </div>
-          )}
-        </div>
+    <div className="login-page-div">
+      <p>{authState.error}</p>
+      <h1>Login</h1>
+
+      <div className="login-container">
+        {authState.isLoading ? (
+          <Spinner animation="border" variant="primary" />
+        ) : (
+          <div>
+            {
+              // Link to request GitHub access
+            }
+            <a
+              className="login-link"
+              href={`https://github.com/login/oauth/authorize?scope=user&client_id=${clientId}&redirect_uri=${redirectUri}`}
+            >
+              Login with GitHub
+            </a>
+          </div>
+        )}
       </div>
-    </section>
+    </div>
   );
 }

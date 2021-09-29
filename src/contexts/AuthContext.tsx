@@ -5,6 +5,7 @@ interface IContextProps {
   authState: IAuthState;
   login(code: string, callback: () => void): Promise<void>;
   refreshToken(): Promise<string | null>;
+  logout: (callback: () => void) => void;
 }
 
 interface IProps {
@@ -79,12 +80,14 @@ export function AuthProvider({ children }: IProps) {
   }, []);
 
   const login = useCallback(async (code: string, callback) => {
+    setAuthState({ ...authState, isLoading: true });
     try {
       const res = await axiosIns.get(`auth/login/${code}`, {
         withCredentials: true,
       });
       const token = res.headers["authorization"];
       console.log(token);
+      callback();
       setAuthState({
         user: res.data,
         accessToken: token,
@@ -92,7 +95,6 @@ export function AuthProvider({ children }: IProps) {
         isAuthenticated: true,
         error: null,
       });
-      callback();
     } catch (error) {
       setAuthState({
         user: null,
@@ -104,10 +106,28 @@ export function AuthProvider({ children }: IProps) {
     }
   }, []);
 
+  const logout = async (callback: () => void) => {
+    await axiosIns.get("auth/logout", {
+      withCredentials: true,
+      headers: {
+        Authorization: `token ${authState.accessToken}`,
+      },
+    });
+
+    setAuthState({
+      user: null,
+      accessToken: null,
+      isLoading: false,
+      isAuthenticated: false,
+      error: null,
+    });
+  };
+
   const values = {
     authState,
     login,
     refreshToken,
+    logout,
   };
 
   useEffect(() => {
