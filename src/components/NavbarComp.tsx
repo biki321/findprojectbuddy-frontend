@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 import "../styles/navbarComp.css";
 import { IconContext } from "react-icons";
 import useWindowDimensions from "../customHooks/useWindowDimensions";
-import { dividerClasses } from "@mui/material";
+// import { dividerClasses } from "@mui/material";
 
 function NavbarComp() {
   const windowDimensions = useWindowDimensions();

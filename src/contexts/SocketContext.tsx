@@ -1,7 +1,7 @@
-import axios, { AxiosRequestConfig } from "axios";
+// import axios, { AxiosRequestConfig } from "axios";
 import React, { useContext, useEffect, useMemo, useState } from "react";
-import jwt_decode from "jwt-decode";
-import { IJwtPayload } from "../interfaces/iJwtPayload.interface";
+// import jwt_decode from "jwt-decode";
+// import { IJwtPayload } from "../interfaces/iJwtPayload.interface";
 import { useAuth } from "./AuthContext";
 import io, { Socket } from "socket.io-client";
 
@@ -52,6 +52,7 @@ export function SocketContextProvider({ children }: IProps) {
       socketObj.socket?.disconnect();
     };
     // }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [socketOptions]);
 
   return (

@@ -1,4 +1,4 @@
-import { Button, Card, Badge } from "react-bootstrap";
+import { Card, Badge } from "react-bootstrap";
 import { IProject } from "../interfaces/project.interface";
 
 interface IProps {

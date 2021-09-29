@@ -1,6 +1,6 @@
 import Avatar from "@mui/material/Avatar";
 import { useEffect, useRef, useState } from "react";
-import Card from "react-bootstrap/esm/Card";
+// import Card from "react-bootstrap/esm/Card";
 import { useAuth } from "../contexts/AuthContext";
 import { useAxiosIntercept } from "../contexts/AxiosInterceptContext";
 import { IMessage } from "../interfaces/message.interface";
@@ -10,6 +10,7 @@ import AutoTextArea from "./AutoTextArea";
 import { RiSendPlane2Fill } from "react-icons/ri";
 import { BiArrowBack } from "react-icons/bi";
 import { Redirect } from "react-router";
+import Spinner from "react-bootstrap/esm/Spinner";
 
 interface IProps {
   partner: IUser;
@@ -54,7 +55,8 @@ export function ConversationComp({
     }
     scrollToBottom();
     setLoading(false);
-  }, [data]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const scrollToBottom = () => {
     messagesEndRef.current!.scrollIntoView({ behavior: "smooth" });
@@ -83,7 +85,18 @@ export function ConversationComp({
     return <Redirect to="/" />;
   }
 
-  return (
+  return loading ? (
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        height: "100vh",
+      }}
+    >
+      <Spinner animation="border" variant="primary" />
+    </div>
+  ) : (
     <div className="conv-div" style={{}}>
       <div className="messageToPerson">
         <div className="backbtn" onClick={handleBackBtnFromConv}>

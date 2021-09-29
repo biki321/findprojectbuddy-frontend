@@ -79,32 +79,35 @@ export function AuthProvider({ children }: IProps) {
     }
   }, []);
 
-  const login = useCallback(async (code: string, callback) => {
-    setAuthState({ ...authState, isLoading: true });
-    try {
-      const res = await axiosIns.get(`auth/login/${code}`, {
-        withCredentials: true,
-      });
-      const token = res.headers["authorization"];
-      console.log(token);
-      callback();
-      setAuthState({
-        user: res.data,
-        accessToken: token,
-        isLoading: false,
-        isAuthenticated: true,
-        error: null,
-      });
-    } catch (error) {
-      setAuthState({
-        user: null,
-        accessToken: null,
-        isLoading: false,
-        isAuthenticated: false,
-        error: "sorry login failed",
-      });
-    }
-  }, []);
+  const login = useCallback(
+    async (code: string, callback) => {
+      setAuthState({ ...authState, isLoading: true });
+      try {
+        const res = await axiosIns.get(`auth/login/${code}`, {
+          withCredentials: true,
+        });
+        const token = res.headers["authorization"];
+        console.log(token);
+        callback();
+        setAuthState({
+          user: res.data,
+          accessToken: token,
+          isLoading: false,
+          isAuthenticated: true,
+          error: null,
+        });
+      } catch (error) {
+        setAuthState({
+          user: null,
+          accessToken: null,
+          isLoading: false,
+          isAuthenticated: false,
+          error: "sorry login failed",
+        });
+      }
+    },
+    [authState]
+  );
 
   const logout = async (callback: () => void) => {
     await axiosIns.get("auth/logout", {
