@@ -42,7 +42,11 @@ export function SocketContextProvider({ children }: IProps) {
     // if (authState.isAuthenticated) {
     console.log("sueeffect at sockt context");
     // if (authState.accessToken) {
-    const newSocket = io("http://localhost:8080", socketOptions);
+    const newSocket = io(
+      process.env.REACT_APP_BASE_URL_FOR_SCKT ||
+        "https://findprojectbuddy.herokuapp.com",
+      socketOptions
+    );
     setSocket({ socket: newSocket });
 
     // socket.emit("message", "hello server");
