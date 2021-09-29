@@ -4,7 +4,7 @@ import { IProject } from "../interfaces/project.interface";
 import { ICollabReq } from "../interfaces/collabReq.interface";
 import { useAxiosIntercept } from "../contexts/AxiosInterceptContext";
 import { ProjectComp } from "./ProjectComp";
-import { NavLink } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import Button from "react-bootstrap/Button";
 import Spinner from "react-bootstrap/esm/Spinner";
 import { Redirect } from "react-router";
@@ -100,40 +100,62 @@ export function ProjectsPage() {
   ) : (
     <div>
       {error}
-      {projectsAndReqs.map((pAndR) => (
-        <div key={pAndR.project.id}>
-          <ProjectComp project={pAndR.project} />
-          <div style={{ marginTop: "10px" }}>
-            <Button
-              type="button"
-              variant="outline-danger"
-              size="sm"
-              onClick={(e) => handleProjectDelete(e, pAndR.project.id)}
+      {projectsAndReqs.length === 0 ? (
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            flexDirection: "column",
+            justifyContent: "center",
+            height: "100vh",
+          }}
+        >
+          <div>You do not have any Projects</div>
+          <div>
+            <Link
+              to="/app/projects/create"
+              style={{ textDecoration: "none", marginTop: "20px" }}
             >
-              Delete
-            </Button>
-            <NavLink
-              to={{
-                pathname: `/app/projects/${pAndR.project.id}/requests`,
-                state: {
-                  props: { collabReqs: pAndR.reqs.concat(pAndR.accepted) },
-                },
-              }}
-              style={{
-                textDecoration: "none",
-                // color: "black",
-                // fontSize: "11px",
-                fontWeight: "bolder",
-                margin: "0px 10px",
-              }}
-            >
-              {pAndR.reqs.length > 0
-                ? `${pAndR.reqs.length} requests`
-                : `${pAndR.accepted.length} people`}
-            </NavLink>
+              Create Project
+            </Link>
           </div>
         </div>
-      ))}
+      ) : (
+        projectsAndReqs.map((pAndR) => (
+          <div key={pAndR.project.id}>
+            <ProjectComp project={pAndR.project} />
+            <div style={{ marginTop: "10px" }}>
+              <Button
+                type="button"
+                variant="outline-danger"
+                size="sm"
+                onClick={(e) => handleProjectDelete(e, pAndR.project.id)}
+              >
+                Delete
+              </Button>
+              <NavLink
+                to={{
+                  pathname: `/app/projects/${pAndR.project.id}/requests`,
+                  state: {
+                    props: { collabReqs: pAndR.reqs.concat(pAndR.accepted) },
+                  },
+                }}
+                style={{
+                  textDecoration: "none",
+                  // color: "black",
+                  // fontSize: "11px",
+                  fontWeight: "bolder",
+                  margin: "0px 10px",
+                }}
+              >
+                {pAndR.reqs.length > 0
+                  ? `${pAndR.reqs.length} requests`
+                  : `${pAndR.accepted.length} people`}
+              </NavLink>
+            </div>
+          </div>
+        ))
+      )}
     </div>
   );
 }

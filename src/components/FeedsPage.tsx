@@ -101,13 +101,20 @@ export default function FeedsPage() {
       style={{
         display: "flex",
         alignItems: "center",
+        flexDirection: "column",
         justifyContent: "center",
+        height: "100vh",
       }}
     >
-      <p>Update technologies you know in profile</p>
-      <Link to="/profile" style={{ textDecoration: "none", marginTop: "20px" }}>
-        Update tags
-      </Link>
+      <div>Update technologies you know</div>
+      <div>
+        <Link
+          to="/app/profile"
+          style={{ textDecoration: "none", marginTop: "20px" }}
+        >
+          Update tags
+        </Link>
+      </div>
     </div>
   ) : (
     <div className="feeds-page">

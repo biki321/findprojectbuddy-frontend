@@ -192,29 +192,45 @@ export function ChatComp() {
         />
       ) : (
         <div className="friends-div">
-          {friends.map((friend: IUser) => (
-            <div className="friends-inner-div" key={friend.id}>
-              <Card onClick={(e) => setCurrentConvUserId(friend.id)}>
-                <Card.Body
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    padding: "8px",
-                  }}
-                >
-                  <Avatar
-                    src={friend.avatar ?? undefined}
-                    sx={{ width: 50, height: 50 }}
-                  />
-                  <div style={{}}>
-                    <div style={{ margin: "auto 20px", fontWeight: "bolder" }}>
-                      {friend.name ?? friend.handle}
-                    </div>
-                  </div>
-                </Card.Body>
-              </Card>
+          {friends.length === 0 ? (
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                flexDirection: "column",
+                justifyContent: "center",
+                height: "100vh",
+              }}
+            >
+              <div>You do not have anybody to message</div>
             </div>
-          ))}
+          ) : (
+            friends.map((friend: IUser) => (
+              <div className="friends-inner-div" key={friend.id}>
+                <Card onClick={(e) => setCurrentConvUserId(friend.id)}>
+                  <Card.Body
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      padding: "8px",
+                    }}
+                  >
+                    <Avatar
+                      src={friend.avatar ?? undefined}
+                      sx={{ width: 50, height: 50 }}
+                    />
+                    <div style={{}}>
+                      <div
+                        style={{ margin: "auto 20px", fontWeight: "bolder" }}
+                      >
+                        {friend.name ?? friend.handle}
+                      </div>
+                    </div>
+                  </Card.Body>
+                </Card>
+              </div>
+            ))
+          )}
         </div>
       )}
     </div>
