@@ -9,7 +9,19 @@ export default function LandingPage() {
   const { authState } = useAuth();
 
   if (authState.isLoading) {
-    return <Spinner animation="border" variant="primary" />;
+    return (
+      <div
+        style={{
+          height: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <Spinner animation="border" variant="primary" />
+      </div>
+    );
+    // return <Spinner animation="border" variant="primary" />;
   }
   console.log("isAuthenticated at lamnd", authState.isAuthenticated);
   if (authState.isAuthenticated) {
