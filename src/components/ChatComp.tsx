@@ -193,11 +193,8 @@ export function ChatComp() {
       ) : (
         <div className="friends-div">
           {friends.map((friend: IUser) => (
-            <div className="friends-inner-div">
-              <Card
-                key={friend.id}
-                onClick={(e) => setCurrentConvUserId(friend.id)}
-              >
+            <div className="friends-inner-div" key={friend.id}>
+              <Card onClick={(e) => setCurrentConvUserId(friend.id)}>
                 <Card.Body
                   style={{
                     display: "flex",

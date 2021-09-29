@@ -159,6 +159,7 @@ export default function ProfilePage() {
   if (!authState.isAuthenticated) {
     return <Redirect to="/" />;
   }
+  console.log("profile page chekcing whether after logout this gets called");
 
   return loading ? (
     <div

@@ -10,7 +10,6 @@ import AutoTextArea from "./AutoTextArea";
 import { RiSendPlane2Fill } from "react-icons/ri";
 import { BiArrowBack } from "react-icons/bi";
 import { Redirect } from "react-router";
-import Spinner from "react-bootstrap/esm/Spinner";
 
 interface IProps {
   partner: IUser;
@@ -38,7 +37,6 @@ export function ConversationComp({
   const axiosIntercept = useAxiosIntercept();
   const { authState } = useAuth();
   const [textmsg, setTextmsg] = useState("");
-  const [loading, setLoading] = useState(true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -54,12 +52,11 @@ export function ConversationComp({
       })();
     }
     scrollToBottom();
-    setLoading(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [messagesEndRef.current]);
 
   const scrollToBottom = () => {
-    messagesEndRef.current!.scrollIntoView({ behavior: "smooth" });
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   function fetchMsgs(partnerId: number) {
@@ -85,18 +82,7 @@ export function ConversationComp({
     return <Redirect to="/" />;
   }
 
-  return loading ? (
-    <div
-      style={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        height: "100vh",
-      }}
-    >
-      <Spinner animation="border" variant="primary" />
-    </div>
-  ) : (
+  return (
     <div className="conv-div" style={{}}>
       <div className="messageToPerson">
         <div className="backbtn" onClick={handleBackBtnFromConv}>
