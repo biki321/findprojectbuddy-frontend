@@ -1,6 +1,7 @@
 #### FindProjectBuddy
 
 check [live](https://findprojectbuddy.netlify.app/)
+check backend code [here](https://github.com/biki321/findprojectbuddy-backend)
 
 It is a web app that helps you to find a partner to do coding project.
 You need to login in the app using **Github** authentication and then update your profile tags which are basically the name of the technologies you have worked on. Then you will receive the projects of others in your feed where you can collaborate.
